@@ -1,0 +1,145 @@
+df <- c(rnorm(40), runif(40), rpois(40, 10), rexp(40), rchisq(40, 1), rbinom(40, 1, 0.5), rcauchy(40))
+
+colnames(df) <- c("Normale(0, 1)", "Uniforme(0, 1)", "Poisson(10)", "Exponentielle(1)", "XhiDeux(1)", "Binomiale(1, 0.5)", "Cauchy(0, 1)")
+
+write.csv(df, file = "tp1.csv")
+
+df <- read.csv(file = "tp1.csv", header = TRUE, sep = ",")
+
+# On remarque que les données stockés dans tp1.csv ont bien été affecté dans le data frame df
+
+norm_10 <- rnorm(10)
+
+seq_10 <- seq(1, 10)
+
+plot(x = seq_10, y = norm_10, main = "ECHANTILLON LOI NORMALE")
+
+abline(h = 1)
+abline(h = 2)
+abline(h = 3)
+abline(h = -1)
+abline(h = -2)
+abline(h = -3)
+
+norm_100 <- rnorm(100)
+
+seq_100 <- seq(1, 100)
+
+plot(x = seq_100, y = norm_100, main = "ECHANTILLON LOI NORMALE")
+
+abline(h = 1)
+abline(h = 2)
+abline(h = 3)
+abline(h = -1)
+abline(h = -2)
+abline(h = -3)
+
+norm_1000 <- rnorm(1000)
+
+seq_1000 <- seq(1, 1000)
+
+plot(x = seq_1000, y = norm_1000, main = "ECHANTILLON LOI NORMALE")
+
+abline(h = 1)
+abline(h = 2)
+abline(h = 3)
+abline(h = -1)
+abline(h = -2)
+abline(h = -3)
+
+# On remaruqe que la distribution des points correspond bien à une loi normale
+# On retrouve la majorité des points dans l'intervalle [-1,1]
+# Plus on s'éloigne du 0 moins on trouve de points
+
+di <- read.csv(file = "distribution_inconnue.csv")
+
+summary(di)
+
+str(di)
+
+plot(di, main = "DISTRIBUTION INCONNUE")
+
+# On remarque que la distrubution inconnue donne 100 valeurs nommées V1 pour chaque élément de {1, 2, ..., 100}
+# La valeur minimale est 1.465, la valeur maximale est 13.068 et la valeur moyenne est 8.358
+
+hist(norm_100, main = "HISTOGRTAME DE LA LOI NORMALE")
+
+hist(di$V1, main = "HISTOGRAMME DE LA DISTRIBUTION INCONNUE")
+
+# On remarque que l'histogramme correspond bien à ce qu'on a remarquer auparavant avant avec la fonction plot
+
+hist(norm_100, freq = TRUE)
+# Pour freq = TRUE on affiche les valeurs en fonction de la fréquence
+
+hist(norm_100, freq = FALSE)
+# Pour freq = FALSE on affiche les valeurs en fonction de la densité
+
+hist(norm_100, breaks = 10)
+hist(norm_100, breaks = 100)
+hist(norm_100, breaks = 1000)
+
+# En modifiant la valeur de break on modifie enfait la largeur des barres de l'histogramme
+
+cauchy_01 <- rcauchy(1000, 0, 1)
+hist(cauchy_01, breaks = 100)
+
+cauchy_12 <- rcauchy(1000, 1, 2)
+hist(cauchy_12, breaks = 100)
+
+cauchy_23 <- rcauchy(1000, 2, 3)
+hist(cauchy_23, breaks = 100)
+
+library(e1071)
+
+m1 <- mean(norm_100)
+m2 <- var(norm_100)
+m3 <- skewness(norm_100)
+m4 <- kurtosis(norm_100)
+
+m1bis <- mean(norm_1000)
+m2bis <- var(norm_1000)
+m3bis <- skewness(norm_1000)
+m4bis <- kurtosis(norm_1000)
+
+result <- data.frame(c(m1, m1bis), c(m2, m2bis), c(m3, m3bis), c(m4, m4bis))
+
+colnames(result) <- c("Moyenne", "Variance", "Skewness", "Kurtosis")
+
+row.names(result) <- c("LOI NORMALE (100)", "LOI NORMALE (1000)")
+
+# On remarque que les résultats ne sont pas exactement les mêmes que les valeurs théoriques
+# Plus on prend un grand échantillon, plus on se rapporche des valeurs théoriques
+
+q100 <- quantile(norm_100)
+
+q1000 <- quantile(norm_1000)
+
+auto <- read.csv(file = "Auto.csv")
+
+head(auto)
+
+summary(auto)
+
+str(auto)
+
+# auto est un data frame contenant 9 variables
+# Il contient différentes informations sur plusieurs modèles de véhicules
+# On trace les histogrammes de chacune des variables de auto
+
+hist(auto$mpg)
+
+hist(auto$cylinders)
+
+hist(auto$desplacement)
+
+hist(auto$horsepower)
+
+hist(auto$weight)
+
+hist(auto$acceleration)
+
+hist(auto$year)
+
+hist(auto$origin)
+
+hist(auto$name)
