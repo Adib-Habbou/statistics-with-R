@@ -1,0 +1,240 @@
+---
+title: "TP 2 Statistiques"
+author: "Adib Habbou, Adel Kebli, Clark Ji"
+date: "18/02/2022"
+output: pdf_document
+---
+
+## Import data from a .csv file
+
+```{r import}
+summer_ozone = read.csv("summer_ozone.csv") # importation du fichier csv
+str(summer_ozone) # structure
+head(summer_ozone) # 6 premières observations
+tail(summer_ozone) # 6 dernières observations
+names(summer_ozone) # noms des variables
+summary(summer_ozone) # min, max, mediane, quantile 1 et 3 de chaque variable
+summer_ozone$date = as.Date(summer_ozone$date2) # convertit la chaîne de caractère en date
+## plot
+plot(summer_ozone$date, summer_ozone$NEUIL, xlab="date", ylab="max ozone", main="summer max ozone")
+points(summer_ozone$date, summer_ozone$RUR.SE, col="red", pch = "x")
+legend("topright", legend = c("NEUIL", "RUR.SE"), col=c("black","red"), pch=c("o","x"))
+```
+
+### Question 1 : 
+
+Le fichier summer_ozone.csv contient 491 observations réparties sur 3 variables "date2", "NEUIL" et "RUR.SE". Il existe une différence entre les sites urbains et les sites ruraux. Cette différence apparaît principalement lorsque l'on regarde la valeur maximale pour chaque variable : les sites urbains affichent une valeur maximale supérieure à celle des sites ruraux. Toutefois, les sites ruraux ont tendance à avoir une moyenne plus élevée. D'après la figure tracée, il n'apparaît pas de différence notable entre chaque année, surtout lorsque l'on regarde la moyenne annuelle.
+
+```{r histogramme, out.width="85%", fig.align='center'}
+hist(summer_ozone$NEUIL, prob=TRUE, col="grey", main="Ozone Summer NEUIL")
+hist(summer_ozone$RUR.SE, prob=TRUE, col="grey", main="Ozone Summer RUR.SE")
+hist(summer_ozone$RUR.SE - summer_ozone$NEUIL, prob=TRUE, col="grey", main="Differences")
+```
+
+### Question 2 :
+
+On remarque que la plupart des différences de densité sont postives, ce qui témoigne du fait que les mesures sur les sites ruraux sont plus élevées que celles sur les sites urbains. Cette observation coïncide avec les attentes scientifiques que l'on peut avoir.
+
+```{r difference, out.width="85%", fig.align='center'}
+winter_ozone = read.csv("winter_ozone.csv") # importation du fichier csv
+str(winter_ozone) # structure
+head(winter_ozone) # 6 premières observations
+tail(winter_ozone) # 6 dernières observations
+names(winter_ozone) # noms des variables
+summary(winter_ozone) # min, max, mediane, quantile 1 et 3 de chaque variable
+winter_ozone$date = as.Date(winter_ozone$date2) # convertit la chaîne de caractère en date
+## plot
+plot(winter_ozone$date, winter_ozone$NEUIL, xlab="date", ylab="max ozone", main="summer max ozone")
+points(winter_ozone$date, winter_ozone$RUR.SE, col="red", pch = "x")
+legend("topright", legend = c("NEUIL", "RUR.SE"), col=c("black","red"), pch=c("o","x"))
+hist(winter_ozone$NEUIL, prob=TRUE, col="grey", main="Ozone Winter NEUIL")
+hist(winter_ozone$RUR.SE, prob=TRUE, col="grey", main="Ozone Winter RUR.SE")
+hist(winter_ozone$RUR.SE - winter_ozone$NEUIL, prob=TRUE, col="grey", main="Differences")
+```
+
+### Question 3 :
+
+Le fichier winter_ozone.csv contient 463 observations réparties sur 3 variables "date2", "NEUIL" et "RUR.SE". Il existe une différence entre les sites urbains et ruraux.
+
+La moyenne est supérieure sur les sites ruraux, de même pour la valeur maximale. D'après la figure tracée, il n'apparaît pas de différence notable entre chaque année, surtout lorsque l'on regarde la moyenne annuelle.
+
+On remarque que quasiment toutes les différences de densité sont postives, ce qui témoigne du fait que les mesures sur les sites ruraux sont bien plus élevées que celles sur les sites urbains.
+
+Cette observation coïncide parfaitement avec les attentes scientifiques que l'on peut avoir.
+
+\newpage
+
+## Empirical distribution function
+
+```{r ecdf_SN, out.width="75%", fig.align='center'}
+plot(ecdf(summer_ozone$NEUIL), main="Summer NEUIL")
+abline(h = 0.5)
+abline(v = 81)
+```
+
+```{r ecdf_SR, out.width="75%", fig.align='center'}
+plot(ecdf(summer_ozone$RUR.SE), main="Summer RUR.SE")
+abline(h = 0.5)
+abline(v = 90)
+```
+
+```{r ecdf_WN, out.width="75%", fig.align='center'}
+plot(ecdf(winter_ozone$NEUIL), main="Winter NEUIL")
+abline(h = 0.5)
+abline(v = 41)
+```
+
+```{r ecdf_WR, out.width="75%", fig.align='center'}
+plot(ecdf(winter_ozone$RUR.SE), main="Winter RUR.SE")
+abline(h = 0.5)
+abline(v = 60)
+```
+
+### Question 4 :
+
+On peut utiliser la fonction ecdf pour estimer la mediane en cherchant le point d'intersection entre la ligne horizontale telle que Fn(x) = 0.5 et la coubre. Ensuite on cherche la ligne verticale qui passe aussi par ce point et on lit sur l'axe des abscisses le résultat.
+
+## Sample covariance and sample correlation
+
+```{r corr_0.5}
+library("MASS")
+vrho = seq(-1, 1, by = 0.2)
+i = length(vrho)
+xxlim = c(-3, 3)
+par(mfrow = c(3, 4))
+for (k in 1:i) {
+  rho = vrho[k]
+  xx = mvrnorm(n = 100, mu = c(0, 0), Sigma = matrix(c(1, rho, rho, 1), ncol = 2))
+  plot(xx[,1], xx[,2], main = paste("corr=", signif(rho, 1)), xlim = xxlim, ylim = xxlim, xlab = "X", ylab = "Y")
+}
+```
+
+### Question 5 :
+
+Plus la corrélation est proche de la valeur 0 plus l'échantillon se disperse en un nuage de points, tandis que lorsqu'on se rapproche de 1 on observe l'apparition d'une droite de pente postive (X = Y) et lorsqu'on se rapproche de -1 on observe l'apparition d'une droite de pente négative (X = -Y).
+
+```{r corr_rho, out.width="95%", fig.align='center'}
+x = summer_ozone$NEUIL
+n = length(x)
+plot(x[1:(n-1)], x[2:n], main = "Summer NEUIL")
+abline(a = 0, b = 1, col = "red")
+```
+
+### Question 6 :
+
+On observe un nuage de points dispersés avec une concentration autour de la droite X = Y. En se basant sur les résultats de la question précédente, on estime le coefficient de corrélation à 0.4. Il existe donc une corrélation entre les valeurs à t-1 et celles à t.
+
+```{r corr_di}
+di = summer_ozone$NEUIL - summer_ozone$RUR.SE
+n = length(di)
+par(mfrow = c(2, 2))
+for(k in 1:4) {
+  plot(di[1:(n-k)], di[(k+1):n], main = paste("lag =", k))
+}
+```
+
+### Question 7 :
+
+On ne remarque aucune corrélation significative entre les valeurs de la série différiencée. On en déduit qu'il n'existe pas de réelle dépendance entre les valeurs de concentration en ozone en zone rurale et urbaine en été.
+
+## Moyenne et phénomène de concentration
+
+### Question 8 :
+
+L'inégalité de Bienaymé-Chebychef dans le cas Gaussien : 
+
+$$\mathbb{P}(|X - \mu| \ge \delta) \le \frac{\sigma^2}{\delta^2}$$
+
+L'inégalité de Bienaymé-Chebychef dans le cas Poisson : 
+
+$$\mathbb{P}(|X - \lambda| \ge \delta) \le \frac{\lambda}{\delta^2}$$
+
+ 
+### Question 9-a :
+
+On sait que : $$\mathbb{P}(|X - \mu| > \delta) = \frac{1}{N} \sum_{i=1}^{N} 1_{[|X_i - \mu| > \delta]}$$
+
+On pose la variable aléatoire : $$\mathbb{Z} = \mathbb{I}_{[|X - \mu| > \delta]}$$
+
+Par conséquent : $$\mathbb{E}[\mathbb{Z}] = \mathbb{P}(|X - \mu| > \delta)$$
+
+### Question 9-b :
+
+```{r, include=FALSE}
+library("EnvStats")
+
+gauss = rnorm(1000, 0, 1)
+pareto = rpareto(1000, 20, 80)
+poisson = rpois(1000, 10)
+
+esp_gauss = mean(gauss)
+esp_pareto = mean(pareto)
+esp_poisson = mean(poisson)
+```
+
+D'après la question précédente : 
+
+$$\mathbb{E}[\mathbb{Z}] = \mathbb{P}(|X - \mu| > \delta)$$
+
+On trouve donc les estimations suivantes :
+
+$$\mathbb{E}[\mathbb{Z}_{gauss}] \approx -0.034$$
+
+$$\mathbb{E}[\mathbb{Z}_{pareto}] \approx 20.242$$
+
+$$\mathbb{E}[\mathbb{Z}_{poisson}] \approx 10.121$$
+
+La précision de cette estimation dépend de la valeur de N : plus N est grand plus l'estimation est bonne.
+
+### Question 9-c :
+
+**TODO**
+
+### Question 9-d :
+
+**TODO**
+
+### Question 10 :
+
+```{r}
+gauss = rnorm(20, 0, 1)
+poisson = rpois(20, 10)
+```
+
+### Question 10-a :
+
+**TODO**
+
+### Question 10-b :
+
+**TODO**
+
+### Question 11 :
+
+```{r}
+cauchy = rcauchy(20)
+```
+
+### Question 11-a :
+
+```{r}
+cauchy_20 = rcauchy(20)
+moy_20 = sum(cauchy_20) / 20
+
+cauchy_100 = rcauchy(100)
+moy_100 = sum(cauchy_100) / 100
+
+cauchy_1000 = rcauchy(1000)
+moy_1000 = sum(cauchy_1000) / 1000
+
+cauchy_10000 = rcauchy(10000)
+moy_10000 = sum(cauchy_10000) / 10000
+```
+
+### Question 11-b :
+
+**TODO**
+
+### Question 11-c :
+
+**TODO**
