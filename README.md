@@ -2,6 +2,6 @@
 
 Using R langage to learn different statistics notions : 
 
-- Confidence Interval : Delta Method, Parametric and Non-Parametric Bootstrap  < /br>
+- Confidence Interval : Delta Method, Parametric and Non-Parametric Bootstrap
 
-- Statistical Tests : Neyman-Pearson, Kolmogorov-Smirnov, Likelihood Ratio...
+- Statistical Tests : Neyman-Pearson, Kolmogorov-Smirnov and Likelihood Ratio
